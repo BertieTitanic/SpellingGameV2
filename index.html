@@ -112,14 +112,6 @@
 </head>
 <body>
 
-<div id="startOverlay" style="position:fixed; inset:0; background:#f0f4f8; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000; padding:20px; box-sizing:border-box; text-align:center;">
-  <h1 style="margin-bottom:10px;">Spelling Challenge</h1>
-  <p style="margin-bottom:20px; color:#333;">Tap below to start &mdash; this lets your device read the words aloud.</p>
-  <button id="startButton" onclick="startGame()" style="padding:16px 32px; font-size:1.3em; background:#0078D4; color:white; border:none; border-radius:8px; cursor:pointer;">&#9654; Tap to Start</button>
-</div>
-
-<div id="gameContainer" style="display:none;">
-
 <h1>Spelling Challenge</h1>
 
 <div style="text-align:center; margin-bottom:20px;">
@@ -152,8 +144,6 @@
 
 <div style="text-align:center; margin-top:10px;">
   <button onclick="listenAgain()">🔊 Listen Again</button>
-</div>
-
 </div>
 
 <script>
@@ -751,22 +741,11 @@ function selectTermAndWeek() {
 }
 
 window.onload = () => {
-  // Set everything up, but don't call onTermChange()/loadQuestion() yet -
-  // that's what triggers speechSynthesis.speak(), and mobile browsers
-  // (notably iOS Safari) silently block speech unless it happens inside a
-  // genuine user gesture. We wait for the "Tap to Start" button instead.
   populateSelectors();
   const firstTerm = [...new Set(allWords.map(w => w.term))][0];
   document.getElementById("termSelect").value = firstTerm;
-  updateWeekOptions(firstTerm);
-  selectedTerm = firstTerm;
+  onTermChange();
 };
-
-function startGame() {
-  document.getElementById("startOverlay").style.display = "none";
-  document.getElementById("gameContainer").style.display = "block";
-  onTermChange(); // now runs inside the click handler, so speak() is allowed
-}
 
 
 document.addEventListener("keydown", (event) => {
