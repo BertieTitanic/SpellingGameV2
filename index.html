@@ -67,7 +67,10 @@
          or big. */
       --kb-w: clamp(24px, calc((100vw - 12px - 9 * 4px) / 10), 44px);
       width: var(--kb-w);
-      height: var(--kb-w);
+      height: calc(var(--kb-w) * 1.3); /* taller than wide - width is the tight
+                                           constraint (10 across the screen),
+                                           height has room to spare, and
+                                           taller targets are easier to tap */
       flex: 0 0 auto;
       padding: 0;
       box-sizing: border-box;
