@@ -41,7 +41,13 @@
       align-items: center;
       gap: 1.5vw;
       margin-bottom: 20px;
-      width: 100%;
+      /* Bleed out past the body's 20px side padding so the keyboard gets
+         the full screen width to work with, independent of the rest of
+         the page's margins. */
+      width: calc(100% + 40px);
+      margin-left: -20px;
+      margin-right: -20px;
+      padding: 0 6px;
       box-sizing: border-box;
     }
     .keyboard-row {
@@ -56,9 +62,10 @@
          em/rem/% font-size. This makes it immune to OS/browser "text size"
          accessibility settings, which only scale em/rem-based text.
          Formula: fit exactly 10 keys + 9 gaps into the space left after the
-         body's 20px side padding (40px total). Clamped between a usable
-         floor and a sensible ceiling so it never gets silly small or big. */
-      --kb-w: clamp(24px, calc((100vw - 40px - 9 * 4px) / 10), 42px);
+         keyboard's own 6px side gutter (12px total). Clamped between a
+         usable floor and a sensible ceiling so it never gets silly small
+         or big. */
+      --kb-w: clamp(24px, calc((100vw - 12px - 9 * 4px) / 10), 44px);
       width: var(--kb-w);
       height: var(--kb-w);
       flex: 0 0 auto;
