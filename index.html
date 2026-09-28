@@ -522,6 +522,7 @@ let current = 0;
 let score = 0;
 let incorrectWords = [];
 let attemptHistory = [];
+let wordAttempts = new Map(); // word -> number of times it was attempted this game
 let typedWord = "";
 
 function speak(text) {
@@ -606,6 +607,9 @@ function checkAnswer() {
   const correct = words[current].word.toLowerCase();
   document.getElementById("checkButton").disabled = true;
 
+  const attemptedWord = words[current].word;
+  wordAttempts.set(attemptedWord, (wordAttempts.get(attemptedWord) || 0) + 1);
+
   if (typedWord === correct) {
     score++;
     document.getElementById("feedback").textContent = "✅ Correct!";
@@ -654,8 +658,18 @@ function listenAgain() {
 function showSummary() {
   let summaryText = "🎉 Game Over!<br><br>";
   attemptHistory.forEach((attempt, index) => {
-    summaryText += `Attempt ${index + 1}: ${attempt.correct} / ${attempt.total}<br>`;
+    summaryText += `Round ${index + 1}: ${attempt.correct} / ${attempt.total}<br>`;
   });
+
+  // Only show the per-word summary once every word has been spelled correctly
+  // (i.e. there are no incorrect words left to retry).
+  const retryable = incorrectWords.some(w => w.term === selectedTerm);
+  if (!retryable && wordAttempts.size > 0) {
+    summaryText += "<br><strong>Words Tested</strong><br>";
+    wordAttempts.forEach((count, word) => {
+      summaryText += `${word} - ${count} ${count === 1 ? "Attempt" : "Attempts"}<br>`;
+    });
+  }
 
   document.getElementById("sentenceDisplay").textContent = "";
   document.getElementById("typedWordDisplay").textContent = "";
@@ -665,7 +679,6 @@ function showSummary() {
   document.getElementById("score").textContent = "";
   document.getElementById("summary").innerHTML = summaryText;
 
-  const retryable = incorrectWords.some(w => w.term === selectedTerm);
   if (retryable) {
     document.getElementById("retryButton").style.display = "block";
   }
@@ -725,6 +738,7 @@ function selectTermAndWeek() {
   current = 0;
   score = 0;
   incorrectWords = [];
+  wordAttempts = new Map();
   typedWord = "";
   document.getElementById("summary").innerHTML = "";
   document.getElementById("score").textContent = "Score: 0";
